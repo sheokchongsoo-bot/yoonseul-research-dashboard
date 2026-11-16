@@ -13,7 +13,7 @@
 <meta property="og:description" content="교통계획 연구 · AI 실무 · 라이딩과 크래프트 노트 아카이브">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314213D'/%3E%3Ctext x='32' y='44' font-family='sans-serif' font-size='34' fill='%23F8F9FA' text-anchor='middle'%3E%EC%9C%A4%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css?v=20261116d">
-<script src="app.js?v=20261116d" defer></script>
+<script src="app.js?v=20261117a" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -29,6 +29,7 @@
     </a>
 
     <nav class="nav" aria-label="섹션 이동">
+      <a href="#brief">오늘</a>
       <a href="#ai">AI · 스킬</a>
       <a href="#transport">교통 · 오픈소스</a>
       <a href="#hobby">라이딩 · 크래프트</a>
@@ -70,6 +71,27 @@
       <div class="stat stat--skeleton"></div>
       <div class="stat stat--skeleton"></div>
       <div class="stat stat--skeleton"></div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="brief" aria-labelledby="briefTitle">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">00</p>
+      <div class="sec-head__body">
+        <h2 id="briefTitle">오늘의 브리핑</h2>
+        <p class="sec-lead" id="briefLead">매일 아침 확인한 다섯 갈래와 오늘의 GitHub 흐름입니다.</p>
+      </div>
+      <p class="sec-count" id="briefDate"></p>
+    </div>
+
+    <div class="split">
+      <div class="panel">
+        <div class="panel__head">
+          <h3>밤사이 확인한 것</h3>
+          <p id="briefNote">수치는 확인 시각 기준입니다. 하루가 지나면 달라집니다.</p>
+        </div>
+        <ul class="toollist" id="briefList"></ul>
+      </div>
     </div>
   </section>
 

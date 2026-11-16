@@ -266,6 +266,45 @@
     }
   };
 
+  /* ---------- render: brief ---------- */
+
+  const renderBrief = (data) => {
+    const brief = data.brief;
+    if (!brief) return;
+
+    const lead = $('#briefLead');
+    if (lead && brief.lead) lead.textContent = brief.lead;
+
+    const dateLabel = $('#briefDate');
+    if (dateLabel && brief.date) dateLabel.textContent = `${dotDate(brief.date)} 기준`;
+
+    const note = $('#briefNote');
+    if (note && brief.note) note.textContent = brief.note;
+
+    const host = $('#briefList');
+    if (!host) return;
+    host.replaceChildren();
+    (brief.items || []).forEach((item) => {
+      const row = el('li');
+      if (item.url) {
+        const link = el('a', null, item.head || item.area || '');
+        link.href = item.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        row.appendChild(link);
+      } else {
+        const label = el('span', null, item.head || item.area || '');
+        label.style.fontSize = '14px';
+        label.style.fontWeight = '600';
+        label.style.color = 'var(--ink)';
+        row.appendChild(label);
+      }
+      row.appendChild(el('span', 'kind', item.area || ''));
+      row.appendChild(el('span', 'desc', item.sum || ''));
+      host.appendChild(row);
+    });
+  };
+
   /* ---------- render: transport ---------- */
 
   const renderTransport = (data) => {
@@ -497,11 +536,11 @@
 
   const renderError = () => {
     const message = 'data.json을 읽지 못했습니다. 같은 폴더에 data.json이 있는지 확인해 주세요.';
-    ['#aiList', '#featured', '#tools', '#riding', '#brompton', '#craft', '#flow'].forEach((sel) => {
+    ['#briefList', '#aiList', '#featured', '#tools', '#riding', '#brompton', '#craft', '#flow'].forEach((sel) => {
       const host = $(sel);
       if (!host) return;
       host.replaceChildren();
-      const note = document.createElement(sel === '#tools' ? 'li' : 'p');
+      const note = document.createElement(sel === '#tools' || sel === '#briefList' ? 'li' : 'p');
       note.className = 'cards__empty';
       note.textContent = message;
       host.appendChild(note);
@@ -555,6 +594,7 @@
       const data = await response.json();
       renderMeta(data);
       renderStats(data);
+      renderBrief(data);
       renderAI(data);
       renderTransport(data);
       renderHobby(data);
