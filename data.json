@@ -293,9 +293,10 @@
         { "label": "국토교통성 — 시마나미 해도 사이클링 루트", "url": "https://www.mlit.go.jp/road/bicycleuse/good-cycle-japan/national_cycle_route/shimanami.html" },
         { "label": "본사고속 — 자전거·보행자도로 이용 방법", "url": "https://www.jb-honshi.co.jp/shimanamicycling/" },
         { "label": "시마나미 재팬 — 렌터사이클·코스 안내", "url": "https://shimanami-cycle.or.jp/" }
-      ],
-      "brompton": {
-        "title": "브롬톤 T라인 정비 메모",
+      ]
+    },
+    "brompton": {
+      "title": "브롬톤 T라인 정비 메모",
         "items": [
           "타이어 공기압은 주 1회. 장거리 전날에는 반드시 확인합니다.",
           "체인은 마른 천으로 닦고 오일은 한 방울씩. 과유은 먼지를 붙입니다.",
@@ -307,7 +308,6 @@
           { "label": "Brompton 공식 사이트", "url": "https://www.brompton.com/" },
           { "label": "Brompton 서포트 — 매뉴얼·부품", "url": "https://www.brompton.com/support" }
         ]
-      }
     },
     "craft": {
       "title": "가죽공작 작업 노트",

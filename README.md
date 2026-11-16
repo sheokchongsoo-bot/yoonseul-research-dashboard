@@ -3,7 +3,7 @@
 교통계획 연구, AI 실무 팁과 1일 1스킬, 라이딩과 가죽공작 노트를 한 화면에 모은 정적 대시보드입니다.
 
 - **사이트**: https://sheokchongsoo-bot.github.io/yoonseul-research-dashboard/
-- **구성**: `index.html` · `assets/style.css` · `assets/app.js` · `data.json`
+- **구성**: `index.html` · `style.css` · `app.js` · `data.json`
 - **스택**: 정적 HTML + CSS + 바닐라 JS. 빌드 도구, 프레임워크, 외부 CDN, 서버, 데이터베이스 없음.
 
 ## 갱신 방법

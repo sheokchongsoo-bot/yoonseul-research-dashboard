@@ -382,17 +382,26 @@
       }
 
       if (riding.links) rideHost.appendChild(buildLinks(riding.links));
-
-      if (riding.brompton) {
-        const block = el('div', 'subblock');
-        block.appendChild(el('h4', null, riding.brompton.title || '정비 메모'));
-        const list = el('ul');
-        (riding.brompton.items || []).forEach((line) => list.appendChild(el('li', null, line)));
-        block.appendChild(list);
-        if (riding.brompton.links) block.appendChild(buildLinks(riding.brompton.links));
-        rideHost.appendChild(block);
-      }
       markReveal(rideHost);
+    }
+
+    const brompton = hobby.brompton;
+    const bromHost = $('#brompton');
+    if (bromHost && brompton) {
+      bromHost.replaceChildren();
+      const title = el('h3');
+      title.id = 'bromptonTitle';
+      title.textContent = brompton.title || '정비 메모';
+      bromHost.appendChild(title);
+
+      const block = el('div', 'subblock');
+      if (brompton.title) block.appendChild(el('h4', null, brompton.title));
+      const list = el('ul');
+      (brompton.items || []).forEach((line) => list.appendChild(el('li', null, line)));
+      block.appendChild(list);
+      if (brompton.links) block.appendChild(buildLinks(brompton.links));
+      bromHost.appendChild(block);
+      markReveal(bromHost);
     }
 
     const craft = hobby.craft;
@@ -487,7 +496,7 @@
 
   const renderError = () => {
     const message = 'data.json을 읽지 못했습니다. 같은 폴더에 data.json이 있는지 확인해 주세요.';
-    ['#aiList', '#featured', '#tools', '#riding', '#craft', '#flow'].forEach((sel) => {
+    ['#aiList', '#featured', '#tools', '#riding', '#brompton', '#craft', '#flow'].forEach((sel) => {
       const host = $(sel);
       if (!host) return;
       host.replaceChildren();
