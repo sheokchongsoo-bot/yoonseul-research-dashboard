@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>윤슬 · Research &amp; Tech Dashboard</title>
+<meta name="description" content="AI 실무 팁과 1일 1스킬 아카이브, 교통·데이터 오픈소스 큐레이션, 라이딩과 가죽공작 노트를 한 화면에 모은 정적 대시보드.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F8F9FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1626" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="윤슬 · Research &amp; Tech Dashboard">
+<meta property="og:description" content="교통계획 연구 · AI 실무 · 라이딩과 크래프트 노트 아카이브">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2314213D'/%3E%3Ctext x='32' y='44' font-family='sans-serif' font-size='34' fill='%23F8F9FA' text-anchor='middle'%3E%EC%9C%A4%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="topbar" id="top">
+  <div class="wrap topbar__inner">
+    <a class="brand" href="#top" aria-label="맨 위로">
+      <span class="brand__mark" aria-hidden="true">윤</span>
+      <span class="brand__text">
+        <strong>윤슬</strong>
+        <span>Research &amp; Tech</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="섹션 이동">
+      <a href="#ai">AI · 스킬</a>
+      <a href="#transport">교통 · 오픈소스</a>
+      <a href="#hobby">라이딩 · 크래프트</a>
+      <a href="#pipeline">데이터 구조</a>
+    </nav>
+
+    <button class="theme" id="themeToggle" type="button" aria-pressed="false">
+      <span class="theme__label" id="themeLabel">라이트</span>
+      <svg class="theme__icon theme__icon--sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2"></circle>
+        <path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"></path>
+      </svg>
+      <svg class="theme__icon theme__icon--moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2Z"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap" aria-labelledby="heroTitle">
+    <div class="hero__text">
+      <p class="eyebrow">Research &amp; Tech Dashboard</p>
+      <h1 id="heroTitle">매일 쌓이는 연구와 관심사를<br>한 화면에 모읍니다.</h1>
+      <p class="lead" id="siteDesc">AI 실무 팁과 스킬, 교통 오픈소스, 라이딩과 가죽공작 노트를 모은 정적 대시보드입니다.</p>
+      <div class="hero__meta">
+        <span class="pulse" aria-hidden="true"></span>
+        <span>최종 갱신 <b id="updated">—</b></span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>정적 페이지 · 서버 없음</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>data.json <span class="mono">1</span>개로 갱신</span>
+      </div>
+    </div>
+
+    <div class="stats" id="stats" aria-label="아카이브 요약">
+      <div class="stat stat--skeleton"></div>
+      <div class="stat stat--skeleton"></div>
+      <div class="stat stat--skeleton"></div>
+      <div class="stat stat--skeleton"></div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="ai" aria-labelledby="aiTitle">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">01</p>
+      <div class="sec-head__body">
+        <h2 id="aiTitle">AI · 클로드 실무 팁과 1일 1스킬</h2>
+        <p class="sec-lead" id="aiLead">실제로 써 본 것만 남깁니다.</p>
+      </div>
+      <p class="sec-count" id="aiCount" aria-live="polite"></p>
+    </div>
+
+    <div class="chips" id="aiChips" role="group" aria-label="AI 아카이브 필터">
+      <button class="chip is-active" type="button" data-filter="all" aria-pressed="true">전체</button>
+    </div>
+
+    <div class="cards" id="aiList"></div>
+  </section>
+
+  <section class="section wrap" id="transport" aria-labelledby="transportTitle">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">02</p>
+      <div class="sec-head__body">
+        <h2 id="transportTitle">교통공학 · 오픈소스 큐레이션</h2>
+        <p class="sec-lead" id="transportLead">연구와 강의에서 실제로 손이 가는 도구만 모았습니다.</p>
+      </div>
+    </div>
+
+    <div class="featured" id="featured"></div>
+
+    <div class="split">
+      <div class="panel">
+        <div class="panel__head">
+          <h3>연구자용 도구 목록</h3>
+          <p>분석·시뮬레이션·데이터 표준을 한 줄씩 정리했습니다.</p>
+        </div>
+        <ul class="toollist" id="tools"></ul>
+      </div>
+
+      <aside class="panel panel--course" id="course" aria-labelledby="courseTitle"></aside>
+    </div>
+  </section>
+
+  <section class="section wrap" id="hobby" aria-labelledby="hobbyTitle">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">03</p>
+      <div class="sec-head__body">
+        <h2 id="hobbyTitle">라이딩 &amp; 크래프트 노트</h2>
+        <p class="sec-lead" id="hobbyLead">자전거와 가죽. 매번 다시 찾게 되는 기준만 적어 두었습니다.</p>
+      </div>
+    </div>
+
+    <div class="hobby">
+      <article class="panel panel--ride" id="riding" aria-labelledby="ridingTitle"></article>
+      <article class="panel panel--craft" id="craft" aria-labelledby="craftTitle"></article>
+    </div>
+  </section>
+
+  <section class="section wrap" id="pipeline" aria-labelledby="pipelineTitle">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">04</p>
+      <div class="sec-head__body">
+        <h2 id="pipelineTitle">아침 브리핑 연동 구조</h2>
+        <p class="sec-lead" id="pipelineLead">빌드 도구도 서버도 쓰지 않습니다. 정적 HTML이 data.json을 읽어 그립니다.</p>
+      </div>
+    </div>
+
+    <div class="flow" id="flow"></div>
+
+    <div class="split split--wide">
+      <div class="panel">
+        <div class="panel__head">
+          <h3>data.json 필드</h3>
+          <p>항목을 추가할 때 확인하는 키만 추렸습니다.</p>
+        </div>
+        <div class="tablewrap">
+          <table class="fields">
+            <caption class="sr-only">data.json 주요 필드 설명</caption>
+            <thead>
+              <tr><th scope="col">키</th><th scope="col">형식</th><th scope="col">설명</th></tr>
+            </thead>
+            <tbody id="fieldRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel panel--code">
+        <div class="panel__head panel__head--row">
+          <div>
+            <h3>새 항목 한 건</h3>
+            <p>배열 맨 앞에 붙이고 <span class="mono">site.updated</span>를 고칩니다.</p>
+          </div>
+          <button class="copy" type="button" data-copy-target="snippet" aria-label="예시 JSON 복사">복사</button>
+        </div>
+        <pre class="code"><code id="snippet"></code></pre>
+      </div>
+    </div>
+
+    <p class="privacy" id="privacyNote"></p>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <p><strong>윤슬 · Research &amp; Tech Dashboard</strong><br>
+    <span class="muted">정적 페이지 · GitHub Pages · 공개 가능한 정보만 수록</span></p>
+    <p class="muted footer__meta">
+      <span>갱신 <span id="footerUpdated">—</span></span>
+      <a id="repoLink" href="https://github.com/sheokchongsoo-bot/yoonseul-research-dashboard" rel="noopener">저장소</a>
+    </p>
+  </div>
+</footer>
+
+<noscript>
+  <p class="noscript">이 페이지는 data.json을 읽어 내용을 그립니다. JavaScript를 켜면 아카이브가 표시됩니다.</p>
+</noscript>
+</body>
+</html>
