@@ -193,7 +193,7 @@ ul { list-style: none; }
 
 .lead {
   margin-top: 22px;
-  max-width: 46ch;
+  max-width: 52ch;
   color: var(--muted);
   font-size: clamp(14.5px, 1.4vw, 16px);
   line-height: 1.75;
@@ -258,7 +258,6 @@ ul { list-style: none; }
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 16px 20px;
   align-items: start;
-  padding-top: clamp(36px, 4vw, 56px);
   margin-bottom: 26px;
 }
 
