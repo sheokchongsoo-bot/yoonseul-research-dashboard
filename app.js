@@ -7,7 +7,8 @@
   'use strict';
 
   const $ = (sel, root = document) => root.querySelector(sel);
-  const DATA_URL = 'data.json';
+  /* 같은 URL을 다시 받지 않도록 매번 다른 질의를 붙인다 (Pages CDN 캐시 회피) */
+  const DATA_URL = `data.json?t=${Date.now()}`;
 
   /* ---------- helpers ---------- */
 

@@ -14,6 +14,8 @@
 2. `site.updated`를 오늘 날짜(`YYYY-MM-DD`)로 바꿉니다.
 3. 커밋 후 `main` 브랜치에 푸시합니다. GitHub Pages가 즉시 다시 서빙합니다.
 
+`index.html`이 `style.css?v=` · `app.js?v=` 형태로 파일을 부르고, 스크립트는 `data.json`을 매번 새 질의로 읽습니다. 그래서 `data.json`만 고칠 때는 버전을 올릴 필요가 없고, **CSS나 JS를 고칠 때만** `index.html`의 `?v=` 값을 새로 바꿔 주면 방문자의 이전 캐시가 남지 않습니다.
+
 ```json
 {
   "id": "ep06",
