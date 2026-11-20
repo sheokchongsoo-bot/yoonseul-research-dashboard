@@ -421,7 +421,7 @@ function renderDays(s) {
               <div class="meal__menu">${m.menu}</div>
               ${m.note ? `<div class="meal__note">${m.note}</div>` : ''}
             </div>
-            <div class="meal__k">
+            <div class="meal__k${m.kcal ? '' : ' is-none'}">
               ${m.kcal ? `${nf(m.kcal)}<i>kcal</i>` : '—'}
               ${m.protein !== undefined && m.kcal ? `<div class="meal__macro">탄 ${g(m.carb)} · 단 ${g(m.protein)} · 지 ${g(m.fat)}</div>` : ''}
             </div>
