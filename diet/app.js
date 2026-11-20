@@ -188,6 +188,7 @@ function renderTrend(s) {
   const kcalLabel = (v) =>
     narrow && v >= 1000 ? (v / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : nf(v);
   const parts = [];
+  const barLabels = [];   // 막대 값은 단백질 선·점보다 위에 그려 선이 글자를 가리지 않게 함
 
   parts.push(`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="일자별 열량과 단백질 추이">`);
 
@@ -257,8 +258,8 @@ function renderTrend(s) {
         `<rect x="${(cx - bw / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="4" fill="none" stroke="${c.ink4}" stroke-width="1.4" stroke-dasharray="4 3"/>`
       );
     }
-    parts.push(
-      `<text x="${cx.toFixed(0)}" y="${(top - 7).toFixed(1)}" text-anchor="middle" font-size="${fBar}" font-weight="700" fill="${d.complete ? c.ink : c.ink3}">${kcalLabel(d.kcal)}</text>`
+    barLabels.push(
+      `<text x="${cx.toFixed(0)}" y="${(top - 7).toFixed(1)}" text-anchor="middle" font-size="${fBar}" font-weight="700" fill="${d.complete ? c.ink : c.ink3}" paint-order="stroke" stroke="${c.panel}" stroke-width="4" stroke-linejoin="round">${kcalLabel(d.kcal)}</text>`
     );
   });
 
@@ -298,15 +299,17 @@ function renderTrend(s) {
           anchor = 'end';
         }
         parts.push(
-          `<text x="${lx.toFixed(1)}" y="${(cy + 4.5).toFixed(1)}" text-anchor="${anchor}" font-size="${fP}" font-weight="700" fill="${c.gold}">${pv}</text>`
+          `<text x="${lx.toFixed(1)}" y="${(cy + 4.5).toFixed(1)}" text-anchor="${anchor}" font-size="${fP}" font-weight="700" fill="${c.gold}" paint-order="stroke" stroke="${c.panel}" stroke-width="4" stroke-linejoin="round">${pv}</text>`
         );
       } else {
         parts.push(
-          `<text x="${cx.toFixed(0)}" y="${(cy - 9).toFixed(1)}" text-anchor="middle" font-size="${fP}" font-weight="700" fill="${c.gold}">${pv}</text>`
+          `<text x="${cx.toFixed(0)}" y="${(cy - 9).toFixed(1)}" text-anchor="middle" font-size="${fP}" font-weight="700" fill="${c.gold}" paint-order="stroke" stroke="${c.panel}" stroke-width="4" stroke-linejoin="round">${pv}</text>`
         );
       }
     }
   });
+
+  parts.push(barLabels.join(''));
 
   // x축 날짜 + 히트 영역
   days.forEach((d, i) => {
@@ -359,8 +362,8 @@ function renderMacro(s) {
     <svg viewBox="0 0 192 192" role="img" aria-label="탄단지 평균 비율 도넛">
       ${arcs.join('')}
       <text x="${cx}" y="${cy - 17}" text-anchor="middle" font-size="13" font-weight="600" fill="${c.ink3}">탄 : 단 : 지</text>
-      <text x="${cx}" y="${cy + 13}" text-anchor="middle" font-size="22" font-weight="800" fill="${c.ink}">${ratioText}</text>
-      <text x="${cx}" y="${cy + 36}" text-anchor="middle" font-size="13" fill="${c.ink4}">${s.complete.length}일 평균</text>
+      <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-size="22" font-weight="800" fill="${c.ink}">${ratioText}</text>
+      <text x="${cx}" y="${cy + 40}" text-anchor="middle" font-size="13" fill="${c.ink4}">${s.complete.length}일 평균</text>
     </svg>
     <div class="macro__legend">
       ${segs.map((sg) => `<span><i style="background:${sg.col}"></i>${Math.round(sg.val)}%</span>`).join('')}
