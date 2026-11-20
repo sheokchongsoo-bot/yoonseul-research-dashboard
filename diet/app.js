@@ -5,7 +5,11 @@
 const $ = (sel) => document.querySelector(sel);
 const nf = (n, d = 0) =>
   Number(n).toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
-const g = (n) => nf(Number(n).toFixed(1).replace(/\.0$/, ''));
+/* 소수 한 자리까지, 정수면 소수점 없이 (50.5 -> "50.5", 88 -> "88") */
+const g = (n) => {
+  const v = Number(n);
+  return Number.isInteger(v) ? nf(v) : v.toFixed(1).replace(/\.0$/, '');
+};
 
 let DATA = null;
 let THEME_COLORS = {};
