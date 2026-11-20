@@ -149,6 +149,13 @@ function renderGauges(s) {
   $('#gauges').innerHTML = calorieBar + proteinBar + hitBar;
 }
 
+/* 글자 폭 측정 — SVG 안에서 값 라벨이 겹치지 않게 배치할 때 사용 */
+function textWidth(txt, px, weight = 700) {
+  const ctx = textWidth.ctx || (textWidth.ctx = document.createElement('canvas').getContext('2d'));
+  ctx.font = `${weight} ${px}px Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`;
+  return ctx.measureText(txt).width;
+}
+
 /* ── 추이 차트 ────────────────────────────── */
 /* 모바일은 컨테이너의 실제 픽셀 폭을 viewBox 폭으로 그대로 써서 글자를 1:1 크기로 그립니다.
    (viewBox가 좁으면 지정한 글자 크기가 화면에서 함께 줄어들어 작아집니다.)
@@ -169,7 +176,7 @@ function renderTrend(s) {
   const pMax = 100;
   const slot = pw / days.length;
   const bw = narrow ? Math.max(10, Math.min(24, slot * 0.6)) : Math.min(46, slot * 0.5);
-  const fAxis = narrow ? 12.5 : 13;
+  const fAxis = narrow ? 13 : 13;
   const fBar = narrow ? 13.5 : 13;
   const fP = narrow ? 13.5 : 13;
   const fX = narrow ? 14 : 13.5;
@@ -209,7 +216,7 @@ function renderTrend(s) {
     );
   }
   parts.push(
-    `<text x="${M.l + 4}" y="${(yk(s.targets.kcalMax) - 7).toFixed(1)}" font-size="${narrow ? 12.5 : 12.5}" fill="${c.green}" font-weight="700">권장 ${nf(s.targets.kcalMin)}–${nf(s.targets.kcalMax)}</text>`
+    `<text x="${M.l + 4}" y="${(yk(s.targets.kcalMax) - 7).toFixed(1)}" font-size="13" fill="${c.green}" font-weight="700">권장 ${nf(s.targets.kcalMin)}–${nf(s.targets.kcalMax)}</text>`
   );
 
   // 우축 단백질 눈금 (넓은 화면만 — 좁은 화면은 값 라벨로 대신)
@@ -235,7 +242,7 @@ function renderTrend(s) {
     const cx = x(i);
     if (!d.kcal) {
       parts.push(
-        `<text x="${cx.toFixed(0)}" y="${(baseY - 8).toFixed(0)}" text-anchor="middle" font-size="${narrow ? 12.5 : 12}" fill="${c.ink4}">무기록</text>`
+        `<text x="${cx.toFixed(0)}" y="${(baseY - 8).toFixed(0)}" text-anchor="middle" font-size="13" fill="${c.ink4}">무기록</text>`
       );
       return;
     }
@@ -280,9 +287,18 @@ function renderTrend(s) {
       const barTop = d.kcal ? yk(d.kcal) : baseY;
       const clash = Math.abs(cy - 9 - (barTop - 8)) < 18;
       if (clash) {
-        // 막대 숫자와 같은 높이면 점 오른쪽에 붙여 씀
+        // 막대 숫자와 같은 높이면 막대 바깥 옆에 붙여 씀(오른쪽이 좁으면 왼쪽으로)
+        const kt = d.kcal ? nf(d.kcal) : '';
+        const kw = Math.max(bw, textWidth(kt, fBar));
+        const pw2 = textWidth(pv, fP);
+        let lx = cx + kw / 2 + 8;
+        let anchor = 'start';
+        if (lx + pw2 > W - M.r) {
+          lx = cx - kw / 2 - 8;
+          anchor = 'end';
+        }
         parts.push(
-          `<text x="${(cx + 10).toFixed(1)}" y="${(cy + 4.5).toFixed(1)}" text-anchor="start" font-size="${fP}" font-weight="700" fill="${c.gold}">${pv}</text>`
+          `<text x="${lx.toFixed(1)}" y="${(cy + 4.5).toFixed(1)}" text-anchor="${anchor}" font-size="${fP}" font-weight="700" fill="${c.gold}">${pv}</text>`
         );
       } else {
         parts.push(
@@ -342,9 +358,9 @@ function renderMacro(s) {
   $('#macroDonut').innerHTML = `
     <svg viewBox="0 0 192 192" role="img" aria-label="탄단지 평균 비율 도넛">
       ${arcs.join('')}
-      <text x="${cx}" y="${cy - 17}" text-anchor="middle" font-size="12.5" font-weight="600" fill="${c.ink3}">탄 : 단 : 지</text>
-      <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-size="22" font-weight="800" fill="${c.ink}">${ratioText}</text>
-      <text x="${cx}" y="${cy + 34}" text-anchor="middle" font-size="12.5" fill="${c.ink4}">완전 기록 ${s.complete.length}일 평균</text>
+      <text x="${cx}" y="${cy - 17}" text-anchor="middle" font-size="13" font-weight="600" fill="${c.ink3}">탄 : 단 : 지</text>
+      <text x="${cx}" y="${cy + 13}" text-anchor="middle" font-size="22" font-weight="800" fill="${c.ink}">${ratioText}</text>
+      <text x="${cx}" y="${cy + 36}" text-anchor="middle" font-size="13" fill="${c.ink4}">${s.complete.length}일 평균</text>
     </svg>
     <div class="macro__legend">
       ${segs.map((sg) => `<span><i style="background:${sg.col}"></i>${Math.round(sg.val)}%</span>`).join('')}
