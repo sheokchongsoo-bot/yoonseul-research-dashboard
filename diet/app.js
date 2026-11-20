@@ -150,51 +150,75 @@ function renderGauges(s) {
 }
 
 /* ── 추이 차트 ────────────────────────────── */
-/* 넓은 화면(1000폭)과 좁은 화면(420폭) 두 가지 기하로 그립니다.
-   SVG는 viewBox로 늘어나므로, 좁은 화면에서는 글자를 크게 잡아야 읽힙니다. */
+/* 모바일은 컨테이너의 실제 픽셀 폭을 viewBox 폭으로 그대로 써서 글자를 1:1 크기로 그립니다.
+   (viewBox가 좁으면 지정한 글자 크기가 화면에서 함께 줄어들어 작아집니다.)
+   좁은 화면에서는 단백질 값을 x축 아래 줄에 따로 놓아 막대 숫자와 겹치지 않게 합니다. */
 function renderTrend(s) {
   const c = THEME_COLORS;
   const days = s.days;
   const box = $('#trendChart');
-  const narrow = (box.clientWidth || 900) < 620;
+  const cw = box.clientWidth || 900;
+  const narrow = cw < 620;
 
-  const W = narrow ? 420 : 1000;
-  const H = narrow ? 340 : 400;
-  const M = narrow ? { l: 30, r: 30, t: 16, b: 44 } : { l: 48, r: 54, t: 22, b: 54 };
+  const W = narrow ? Math.max(280, Math.round(cw)) : 1000;
+  const H = narrow ? 320 : 400;
+  const M = narrow ? { l: 34, r: 16, t: 24, b: 68 } : { l: 58, r: 62, t: 24, b: 64 };
   const pw = W - M.l - M.r;
   const ph = H - M.t - M.b;
-  const kcalMax = 2600, pMax = 100;
+  const kcalMax = 2600;
+  const pMax = 100;
   const slot = pw / days.length;
-  const bw = narrow ? Math.min(20, slot * 0.52) : Math.min(46, slot * 0.5);
-  const fs = narrow ? 11 : 11.5;
+  const bw = narrow ? Math.max(10, Math.min(24, slot * 0.6)) : Math.min(46, slot * 0.5);
+  const fAxis = narrow ? 12.5 : 13;
+  const fBar = narrow ? 13.5 : 13;
+  const fP = narrow ? 13.5 : 13;
+  const fX = narrow ? 14 : 13.5;
+  const baseY = M.t + ph;
 
   const x = (i) => M.l + slot * (i + 0.5);
   const yk = (v) => M.t + ph - (v / kcalMax) * ph;
   const yp = (v) => M.t + ph - (v / pMax) * ph;
-
+  const kcalLabel = (v) =>
+    narrow && v >= 1000 ? (v / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : nf(v);
   const parts = [];
+
   parts.push(`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="일자별 열량과 단백질 추이">`);
 
-  // 권장 구간
+  // 권장 열량 구간 음영
   parts.push(
     `<rect x="${M.l}" y="${yk(s.targets.kcalMax).toFixed(1)}" width="${pw}" height="${(
       yk(s.targets.kcalMin) - yk(s.targets.kcalMax)
     ).toFixed(1)}" fill="${c.green}" opacity="0.09"/>`
   );
-  // 가로 격자 + 좌축 라벨
+
+  // 가로 격자 + 좌축 눈금
   const ticks = narrow ? [0, 1000, 2000] : [0, 500, 1000, 1500, 2000, 2500];
   for (const v of ticks) {
-    parts.push(`<line x1="${M.l}" x2="${W - M.r}" y1="${yk(v).toFixed(1)}" y2="${yk(v).toFixed(1)}" stroke="${c.lineSoft}" stroke-width="1"/>`);
-    parts.push(`<text x="${M.l - 7}" y="${(yk(v) + 4).toFixed(1)}" text-anchor="end" font-size="${narrow ? 10 : 11}" fill="${c.ink4}">${nf(v)}</text>`);
+    parts.push(
+      `<line x1="${M.l}" x2="${W - M.r}" y1="${yk(v).toFixed(1)}" y2="${yk(v).toFixed(1)}" stroke="${c.lineSoft}" stroke-width="1"/>`
+    );
+    const lab = narrow ? (v ? v / 1000 + 'k' : '0') : nf(v);
+    parts.push(
+      `<text x="${M.l - 9}" y="${(yk(v) + 4).toFixed(1)}" text-anchor="end" font-size="${fAxis}" fill="${c.ink4}">${lab}</text>`
+    );
   }
+  // 권장 열량 상·하한 점선
   for (const v of [s.targets.kcalMin, s.targets.kcalMax]) {
-    parts.push(`<line x1="${M.l}" x2="${W - M.r}" y1="${yk(v).toFixed(1)}" y2="${yk(v).toFixed(1)}" stroke="${c.green}" stroke-width="1" stroke-dasharray="5 5" opacity="0.5"/>`);
+    parts.push(
+      `<line x1="${M.l}" x2="${W - M.r}" y1="${yk(v).toFixed(1)}" y2="${yk(v).toFixed(1)}" stroke="${c.green}" stroke-width="1" stroke-dasharray="5 5" opacity="0.5"/>`
+    );
   }
-  parts.push(`<text x="${W - M.r + 6}" y="${(yk(s.targets.kcalMax) + 3).toFixed(1)}" font-size="${narrow ? 9.5 : 10.5}" fill="${c.green}" font-weight="700">권장</text>`);
+  parts.push(
+    `<text x="${M.l + 4}" y="${(yk(s.targets.kcalMax) - 7).toFixed(1)}" font-size="${narrow ? 12.5 : 12.5}" fill="${c.green}" font-weight="700">권장 ${nf(s.targets.kcalMin)}–${nf(s.targets.kcalMax)}</text>`
+  );
 
-  // 우축 단백질 라벨
-  for (const v of narrow ? [50, 100] : [0, 50, 100]) {
-    parts.push(`<text x="${W - M.r + 6}" y="${(yp(v) + 4).toFixed(1)}" font-size="${narrow ? 9.5 : 10.5}" fill="${c.gold}">${v}g</text>`);
+  // 우축 단백질 눈금 (넓은 화면만 — 좁은 화면은 값 라벨로 대신)
+  if (!narrow) {
+    for (const v of [0, 50, 100]) {
+      parts.push(
+        `<text x="${W - M.r + 8}" y="${(yp(v) + 4).toFixed(1)}" font-size="${fAxis}" fill="${c.gold}">${v}g</text>`
+      );
+    }
   }
   // 단백질 목표 밴드
   parts.push(
@@ -202,71 +226,92 @@ function renderTrend(s) {
       yp(s.targets.proteinMin) - yp(s.targets.proteinMax)
     ).toFixed(1)}" fill="${c.gold}" opacity="0.16"/>`
   );
-  parts.push(`<line x1="${M.l}" x2="${W - M.r}" y1="${yp(s.targets.proteinMin).toFixed(1)}" y2="${yp(s.targets.proteinMin).toFixed(1)}" stroke="${c.gold}" stroke-width="1" stroke-dasharray="4 4" opacity="0.75"/>`);
+  parts.push(
+    `<line x1="${M.l}" x2="${W - M.r}" y1="${yp(s.targets.proteinMin).toFixed(1)}" y2="${yp(s.targets.proteinMin).toFixed(1)}" stroke="${c.gold}" stroke-width="1" stroke-dasharray="4 4" opacity="0.75"/>`
+  );
 
-  // 막대
+  // 막대(열량)
   days.forEach((d, i) => {
+    const cx = x(i);
     if (!d.kcal) {
-      parts.push(`<text x="${x(i).toFixed(0)}" y="${(yk(0) - 8).toFixed(0)}" text-anchor="middle" font-size="${narrow ? 9.5 : 10.5}" fill="${c.ink4}">무기록</text>`);
+      parts.push(
+        `<text x="${cx.toFixed(0)}" y="${(baseY - 8).toFixed(0)}" text-anchor="middle" font-size="${narrow ? 12.5 : 12}" fill="${c.ink4}">무기록</text>`
+      );
       return;
     }
     const top = yk(d.kcal);
-    const h = Math.max(2, yk(0) - top);
+    const h = Math.max(2, baseY - top);
     if (d.complete) {
       parts.push(
-        `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="4" fill="${c.green}"/>`
+        `<rect x="${(cx - bw / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="4" fill="${c.green}"/>`
       );
     } else {
       parts.push(
-        `<rect x="${(x(i) - bw / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="4" fill="none" stroke="${c.ink4}" stroke-width="1.3" stroke-dasharray="4 3"/>`
+        `<rect x="${(cx - bw / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="4" fill="none" stroke="${c.ink4}" stroke-width="1.4" stroke-dasharray="4 3"/>`
       );
     }
-    // 좁은 화면에서는 막대 위 숫자가 겹치므로 4자리만 축약
-    const label = narrow ? (d.kcal >= 1000 ? (d.kcal / 1000).toFixed(1) + 'k' : String(d.kcal)) : nf(d.kcal);
     parts.push(
-      `<text x="${x(i).toFixed(0)}" y="${(top - 6).toFixed(1)}" text-anchor="middle" font-size="${narrow ? 9.5 : 11.5}" font-weight="700" fill="${d.complete ? c.ink : c.ink3}">${label}</text>`
+      `<text x="${cx.toFixed(0)}" y="${(top - 7).toFixed(1)}" text-anchor="middle" font-size="${fBar}" font-weight="700" fill="${d.complete ? c.ink : c.ink3}">${kcalLabel(d.kcal)}</text>`
     );
   });
 
-  // 단백질 선(완전 기록일만 연결) + 점
+  // 단백질 선(완전 기록일 연결)
   const full = days.filter((d) => d.complete);
   if (full.length > 1) {
     const pts = full.map((d) => `${x(days.indexOf(d)).toFixed(1)},${yp(d.protein).toFixed(1)}`).join(' ');
-    parts.push(`<polyline points="${pts}" fill="none" stroke="${c.gold}" stroke-width="${narrow ? 2 : 2.4}" stroke-linejoin="round" opacity="0.9"/>`);
+    parts.push(`<polyline points="${pts}" fill="none" stroke="${c.gold}" stroke-width="${narrow ? 2.6 : 2.6}" stroke-linejoin="round" opacity="0.9"/>`);
   }
   days.forEach((d, i) => {
     if (!d.recorded) return;
-    const cx0 = x(i), cy0 = yp(d.protein);
+    const cx = x(i);
+    const cy = yp(d.protein);
     if (d.complete) {
-      parts.push(`<circle cx="${cx0.toFixed(1)}" cy="${cy0.toFixed(1)}" r="${narrow ? 3.4 : 5}" fill="${c.gold}" stroke="${c.panel}" stroke-width="1.6"/>`);
+      parts.push(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${narrow ? 4 : 5}" fill="${c.gold}" stroke="${c.panel}" stroke-width="1.6"/>`);
     } else {
-      parts.push(`<circle cx="${cx0.toFixed(1)}" cy="${cy0.toFixed(1)}" r="${narrow ? 3 : 4.2}" fill="${c.panel}" stroke="${c.gold}" stroke-width="1.8"/>`);
+      parts.push(`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${narrow ? 3.6 : 4.4}" fill="${c.panel}" stroke="${c.gold}" stroke-width="1.8"/>`);
     }
-    parts.push(
-      `<text x="${cx0.toFixed(0)}" y="${(cy0 - 8).toFixed(1)}" text-anchor="middle" font-size="${narrow ? 9 : 10.5}" font-weight="600" fill="${c.gold}">${g(d.protein)}</text>`
-    );
+    const pv = g(d.protein);
+    if (narrow) {
+      // x축 아래 단백질 값 줄 — 막대 숫자와 겹치지 않음
+      parts.push(
+        `<text x="${cx.toFixed(0)}" y="${(baseY + 39).toFixed(0)}" text-anchor="middle" font-size="${fP}" font-weight="700" fill="${c.gold}">${pv}</text>`
+      );
+    } else {
+      const barTop = d.kcal ? yk(d.kcal) : baseY;
+      const clash = Math.abs(cy - 9 - (barTop - 8)) < 18;
+      if (clash) {
+        // 막대 숫자와 같은 높이면 점 오른쪽에 붙여 씀
+        parts.push(
+          `<text x="${(cx + 10).toFixed(1)}" y="${(cy + 4.5).toFixed(1)}" text-anchor="start" font-size="${fP}" font-weight="700" fill="${c.gold}">${pv}</text>`
+        );
+      } else {
+        parts.push(
+          `<text x="${cx.toFixed(0)}" y="${(cy - 9).toFixed(1)}" text-anchor="middle" font-size="${fP}" font-weight="700" fill="${c.gold}">${pv}</text>`
+        );
+      }
+    }
   });
 
-  // x축 라벨 + 히트 영역
+  // x축 날짜 + 히트 영역
   days.forEach((d, i) => {
     const label = narrow ? d.date.slice(8) : d.date.slice(5).replace('-', '.');
     parts.push(
-      `<text x="${x(i).toFixed(0)}" y="${(M.t + ph + (narrow ? 16 : 20)).toFixed(0)}" text-anchor="middle" font-size="${fs}" fill="${c.ink3}">${label}</text>`
+      `<text x="${x(i).toFixed(0)}" y="${(baseY + (narrow ? 18 : 24)).toFixed(0)}" text-anchor="middle" font-size="${fX}" fill="${c.ink3}">${label}</text>`
     );
     if (!narrow) {
       parts.push(
-        `<text x="${x(i).toFixed(0)}" y="${(M.t + ph + 34).toFixed(0)}" text-anchor="middle" font-size="10" fill="${c.ink4}">${d.dow}</text>`
+        `<text x="${x(i).toFixed(0)}" y="${(baseY + 42).toFixed(0)}" text-anchor="middle" font-size="12.5" fill="${c.ink4}">${d.dow}</text>`
       );
     }
     parts.push(
-      `<rect class="hit" x="${(M.l + slot * i).toFixed(1)}" y="${M.t}" width="${slot.toFixed(1)}" height="${ph}"
+      `<rect class="hit" x="${(M.l + slot * i).toFixed(1)}" y="${M.t}" width="${slot.toFixed(1)}" height="${(ph + 44).toFixed(1)}"
         data-tip="${d.date.replace(/-/g, '.')} (${d.dow}) · ${d.kcal ? nf(d.kcal) + ' kcal' : '기록 없음'}${d.recorded ? ' · 단백질 ' + g(d.protein) + 'g' : ''}"/>
-        <line class="hl" x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${M.t}" y2="${M.t + ph}" stroke="${c.ink}" stroke-width="1" opacity="0" pointer-events="none"/>`
+        <line class="hl" x1="${x(i).toFixed(1)}" x2="${x(i).toFixed(1)}" y1="${M.t}" y2="${baseY}" stroke="${c.ink}" stroke-width="1" opacity="0" pointer-events="none"/>`
     );
   });
 
-  parts.push("</svg>");
-  box.innerHTML = parts.join("");
+  parts.push('</svg>');
+  box.innerHTML = parts.join('');
 }
 
 /* ── 탄단지 도넛 + 막대 ────────────────────── */
@@ -297,9 +342,9 @@ function renderMacro(s) {
   $('#macroDonut').innerHTML = `
     <svg viewBox="0 0 192 192" role="img" aria-label="탄단지 평균 비율 도넛">
       ${arcs.join('')}
-      <text x="${cx}" y="${cy - 14}" text-anchor="middle" font-size="11" fill="${c.ink3}">탄 : 단 : 지</text>
-      <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-size="21" font-weight="800" fill="${c.ink}">${ratioText}</text>
-      <text x="${cx}" y="${cy + 31}" text-anchor="middle" font-size="10" fill="${c.ink4}">완전 기록 ${s.complete.length}일 평균</text>
+      <text x="${cx}" y="${cy - 17}" text-anchor="middle" font-size="12.5" font-weight="600" fill="${c.ink3}">탄 : 단 : 지</text>
+      <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-size="22" font-weight="800" fill="${c.ink}">${ratioText}</text>
+      <text x="${cx}" y="${cy + 34}" text-anchor="middle" font-size="12.5" fill="${c.ink4}">완전 기록 ${s.complete.length}일 평균</text>
     </svg>
     <div class="macro__legend">
       ${segs.map((sg) => `<span><i style="background:${sg.col}"></i>${Math.round(sg.val)}%</span>`).join('')}
@@ -386,18 +431,36 @@ function renderDays(s) {
 /* ── 툴팁 ─────────────────────────────────── */
 function bindTooltip() {
   const tip = $('#tooltip');
+  let hideTimer = null;
+  const hide = () => tip.classList.remove('on');
+  const show = (text, x, y, autoHide) => {
+    tip.textContent = text;
+    tip.style.left = `${x}px`;
+    tip.style.top = `${y - 10}px`;
+    tip.classList.add('on');
+    clearTimeout(hideTimer);
+    if (autoHide) hideTimer = setTimeout(hide, 3000);
+  };
+
   document.addEventListener('mousemove', (e) => {
     const t = e.target.closest('[data-tip]');
-    if (!t) {
-      tip.classList.remove('on');
-      return;
-    }
-    tip.textContent = t.dataset.tip;
-    tip.style.left = `${e.clientX}px`;
-    tip.style.top = `${e.clientY - 8}px`;
-    tip.classList.add('on');
+    if (!t) return hide();
+    show(t.dataset.tip, e.clientX, e.clientY, false);
   });
-  document.addEventListener('mouseleave', () => tip.classList.remove('on'));
+  document.addEventListener('mouseleave', hide);
+
+  // 터치: 탭한 날짜의 값을 3초간 보여 줍니다(모바일에는 hover가 없음)
+  document.addEventListener(
+    'touchstart',
+    (e) => {
+      const t = e.target.closest('[data-tip]');
+      if (!t) return hide();
+      const p = e.touches[0];
+      show(t.dataset.tip, p.clientX, p.clientY, true);
+    },
+    { passive: true }
+  );
+  window.addEventListener('scroll', hide, { passive: true });
 }
 
 /* ── 테마 ─────────────────────────────────── */
