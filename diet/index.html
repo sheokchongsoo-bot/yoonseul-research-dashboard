@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>식단 &amp; 영양 대시보드 · Dr. S</title>
+<meta name="description" content="2026년 11월 12일–20일 식단 기록 결산. 일자별 열량·단백질 추이와 탄단지 비율, 끼니별 타임라인을 한 화면에 정리한 정적 대시보드.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F6F5F0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1714" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="식단 &amp; 영양 대시보드">
+<meta property="og:description" content="9일 식단 결산 — 일자별 열량·단백질, 탄단지 비율, 끼니별 기록">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231F6B4F'/%3E%3Ctext x='32' y='45' font-family='sans-serif' font-size='34' fill='%23F6F5F0' text-anchor='middle'%3E%EC%8B%9D%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css?v=20261120a">
+<script src="app.js?v=20261120a" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <a class="brand" href="#top">
+      <span class="brand__mark" aria-hidden="true">식</span>
+      <span class="brand__text">
+        <strong>식단 &amp; 영양</strong>
+        <span>Diet &amp; Nutrition · Dr. S</span>
+      </span>
+    </a>
+    <nav class="nav" aria-label="섹션 이동">
+      <a href="#summary">요약</a>
+      <a href="#trend">추이</a>
+      <a href="#macro">탄단지</a>
+      <a href="#timeline">기록</a>
+    </nav>
+    <button class="theme" id="themeToggle" type="button" aria-pressed="false">
+      <span id="themeLabel">라이트</span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero wrap" id="top">
+    <div class="hero__text">
+      <p class="eyebrow">2026.11.12 – 11.20 · 중간 결산</p>
+      <h1>9일 동안 <em>무엇이 바뀌었나</em>.</h1>
+      <p class="lead" id="siteNote">식사 사진을 바탕으로 칼로리와 탄단지를 분석해 하루 단위로 쌓은 기록입니다.</p>
+      <div class="hero__meta">
+        <span class="pulse" aria-hidden="true"></span>
+        <span>최종 갱신 <b id="updated">—</b></span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>완전 기록 <b id="completeCount">—</b>일</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>data.json <span class="mono">1</span>개로 갱신</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="summary">
+    <div class="kpis" id="kpis" aria-label="핵심 지표"></div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <h2>목표 대비</h2>
+        <p>권장 2,000–2,200 kcal · 단백질 70–80 g</p>
+      </div>
+      <div id="gauges" class="gauges"></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="trend">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">01</p>
+      <div class="sec-head__body">
+        <h2>일자별 열량 · 단백질 추이</h2>
+        <p>막대는 열량(좌축), 선은 단백질(우축). 점선 막대는 하루 기록이 덜 찬 날입니다.</p>
+      </div>
+    </div>
+    <div class="panel panel--chart">
+      <div class="legend">
+        <span><i class="sw sw--full"></i>완전 기록일</span>
+        <span><i class="sw sw--part"></i>부분 기록</span>
+        <span><i class="sw sw--band"></i>권장 구간</span>
+        <span><i class="sw sw--line"></i>단백질</span>
+      </div>
+      <div class="chart" id="trendChart"></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="macro">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">02</p>
+      <div class="sec-head__body">
+        <h2>탄단지 평균 비율</h2>
+        <p>완전 기록일의 영양소를 열량으로 환산한 비율입니다. 옅은 띠가 권장 구간.</p>
+      </div>
+    </div>
+    <div class="panel macro">
+      <div class="macro__donut" id="macroDonut"></div>
+      <div class="macro__bars" id="macroBars"></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="timeline">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">03</p>
+      <div class="sec-head__body">
+        <h2>일자별 식단 기록</h2>
+        <p>날짜를 누르면 끼니별 메뉴와 영양 코칭 메모가 펼쳐집니다.</p>
+      </div>
+    </div>
+    <div class="days" id="days"></div>
+  </section>
+
+  <section class="wrap" id="about">
+    <div class="sec-head">
+      <p class="sec-num" aria-hidden="true">04</p>
+      <div class="sec-head__body">
+        <h2>기준과 갱신 방법</h2>
+      </div>
+    </div>
+    <div class="panel notes">
+      <div class="note">
+        <h3>집계 기준</h3>
+        <ul>
+          <li>평균은 <b>3식 완전 기록일</b>만으로 계산합니다. 부분 기록일(한두 끼만 남긴 날)은 평균을 왜곡하므로 그래프에서 점선·속 빈 막대로 구분합니다.</li>
+          <li>탄단지 비율은 탄수화물·단백질 4 kcal/g, 지방 9 kcal/g으로 환산한 뒤 비율로 바꾼 값입니다.</li>
+          <li>칼로리와 영양소는 사진을 보고 추정한 값이라 ±10% 오차가 있을 수 있습니다.</li>
+        </ul>
+      </div>
+      <div class="note">
+        <h3>기록 추가하기</h3>
+        <ul>
+          <li>모든 데이터는 <code>data.json</code> 한 파일에 있습니다. <code>days</code> 배열에 하루를 추가하고 <code>site.updated</code>만 오늘 날짜로 바꾼 뒤 커밋하면 화면·요약·차트가 자동으로 다시 계산됩니다.</li>
+          <li>하루 항목: <code>date</code> · <code>dow</code> · <code>kcal</code> · <code>carb</code> · <code>protein</code> · <code>fat</code> · <code>complete</code> · <code>meals[]</code> · <code>advice</code></li>
+          <li>평균·달성일수·도넛 비율은 화면에서 계산하므로 손으로 고칠 숫자는 없습니다.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__inner">
+    <div>
+      <b>식단 &amp; 영양 대시보드</b>
+      <span>2026.11.12 – 11.20 · Dr. S</span>
+    </div>
+    <div class="foot__right">
+      <span>정적 페이지 · 서버 없음 · 데이터는 <code>data.json</code></span>
+    </div>
+  </div>
+</footer>
+
+<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+</body>
+</html>
