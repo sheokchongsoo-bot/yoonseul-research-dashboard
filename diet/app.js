@@ -286,8 +286,10 @@ function renderTrend(s) {
       );
     } else {
       const barTop = d.kcal ? yk(d.kcal) : baseY;
+      // 막대 안쪽(점이 막대 높이 아래)에 있거나 막대 숫자와 같은 높이면 막대 바깥 옆에 붙여 쓴다
+      const insideBar = !!d.kcal && cy > barTop + 2;
       const clash = Math.abs(cy - 9 - (barTop - 8)) < 18;
-      if (clash) {
+      if (insideBar || clash) {
         // 막대 숫자와 같은 높이면 막대 바깥 옆에 붙여 씀(오른쪽이 좁으면 왼쪽으로)
         const kt = d.kcal ? nf(d.kcal) : '';
         const kw = Math.max(bw, textWidth(kt, fBar));
