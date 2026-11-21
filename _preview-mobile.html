@@ -18,5 +18,12 @@
   <div class="col"><div class="cap">412px (Galaxy S25 Ultra)</div><iframe src="./index.html" title="412px 미리보기"></iframe></div>
   <div class="col col--360"><div class="cap">360px</div><iframe src="./index.html" title="360px 미리보기"></iframe></div>
 </div>
+<script>
+  document.querySelectorAll('iframe').forEach(function (f) {
+    f.addEventListener('load', function () {
+      try { f.style.height = f.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {}
+    });
+  });
+</script>
 </body>
 </html>
