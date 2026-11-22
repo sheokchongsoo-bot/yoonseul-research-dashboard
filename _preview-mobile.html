@@ -20,7 +20,7 @@
 </div>
 <script>
   document.querySelectorAll('iframe').forEach(function (f) {
-    f.src = f.dataset.src + (location.hash || '');
+    f.src = f.dataset.src + '?px=' + Date.now() + (location.hash || '');
   });
 </script>
 </body>
