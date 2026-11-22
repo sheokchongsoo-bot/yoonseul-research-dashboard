@@ -65,6 +65,7 @@ body {
   line-height: 1.78;
   letter-spacing: -.01em;
   word-break: keep-all;
+  overflow-wrap: anywhere;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   transition: background-color .28s ease, color .28s ease;
@@ -861,7 +862,7 @@ ul { list-style: none; }
   .panel, .feat { padding: 26px 20px; }
   .facts > div { grid-template-columns: 120px minmax(0, 1fr); gap: 16px; }
   .facts dd { font-size: 20.5px; }
-  .toollist li { grid-template-columns: 1fr; }
+  .toollist li { grid-template-columns: minmax(0, 1fr); }
   .toollist .kind { padding-top: 0; }
 
   .prompt { padding: 16px 18px; }
