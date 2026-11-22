@@ -858,12 +858,19 @@ ul { list-style: none; }
 
   .prompt { padding: 14px 16px; }
   .prompt code { font-size: 15.5px; }
-  .prompt .copy { position: static; margin: 10px 0 0 auto; padding: 6px 12px; font-size: 14.5px; }
+  .prompt .copy { position: static; display: grid; width: max-content; margin: 10px 0 0 auto; padding: 6px 12px; font-size: 14.5px; }
 
   .fields { font-size: 16.5px; }
-  .fields td:first-child, .fields td:nth-child(2) { white-space: normal; }
-  .fields td:first-child { font-size: 16px; }
-  .fields td:nth-child(2) { font-size: 15px; }
+  .fields thead { display: none; }
+  .fields, .fields tbody, .fields tr, .fields td { display: block; width: auto; }
+  .fields tr { padding: 14px 0 13px; border-bottom: 1px solid var(--line); }
+  .fields tr:last-child { border-bottom: 0; padding-bottom: 0; }
+  .fields td { padding: 0; border: 0; }
+  .fields td:first-child {
+    font-size: 16.5px; color: var(--ink); font-weight: 600; white-space: normal;
+  }
+  .fields td:nth-child(2) { font-size: 15px; margin-top: 3px; white-space: normal; }
+  .fields td:nth-child(3) { margin-top: 6px; font-size: 16.5px; }
 
   .footer__inner { flex-direction: column; gap: 14px; }
 }
