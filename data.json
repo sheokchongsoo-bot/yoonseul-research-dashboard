@@ -67,58 +67,58 @@
         "date": "2026-11-22",
         "tags": [
           "문서작업",
-          "워드"
+          "한글"
         ],
-        "title": "수정 요청엔 '변경 내용 추적'으로 답하세요",
-        "summary": "본문만 고쳐 보내면 받는 쪽은 달라진 문장을 눈으로 찾아야 합니다. docx 스킬은 워드의 변경 내용 추적과 검토 메모를 파일 안에 새기고, 추적을 모두 수락한 깨끗한 제출본까지 따로 뽑습니다.",
+        "title": "한컴오피스 없이 한글 양식을 채웁니다",
+        "summary": "공문서 서식, 심사 양식, 가정통신문은 아직 한글(.hwp·.hwpx)로 도는 문서가 많습니다. hwpx-plugin은 그 파일을 순수 파이썬으로 열어 읽고, 서식은 그대로 둔 채 값 칸만 채워 새 파일로 돌려줍니다.",
         "steps": [
           {
             "label": "스킬을 붙인다",
-            "text": "Claude Code 플러그인 마켓으로 문서 스킬 묶음을 설치합니다. docx·pdf·pptx·xlsx가 함께 들어옵니다.",
-            "prompt": "/plugin marketplace add anthropics/skills\n/plugin install document-skills@anthropic-agent-skills"
+            "text": "Claude Code 플러그인 마켓에 hwpx 마켓을 붙이고 hwpx-plugin을 설치합니다. 설치 뒤 새 세션을 열어야 도구가 뜹니다.",
+            "prompt": "claude plugin marketplace add airmang/hwpx-plugins\nclaude plugin install hwpx-plugin@hwpx"
           },
           {
-            "label": "추적 변경으로 고친다",
-            "text": "바꾼 곳마다 누가·언제 바꿨는지가 남고, 바꾼 이유는 해당 문장에 메모로 붙습니다.",
-            "prompt": "이 원고 3장 2절을 변경 내용 추적으로 고쳐 줘. 심사 지적 ①~③에 대응하고, 바꾼 이유는 문장마다 메모로 달아 줘."
+            "label": "양식은 그대로, 값만 채운다",
+            "text": "레이아웃과 서식을 건드리지 않고 값 칸만 채웁니다. 표의 행·열도 맞춰 조정합니다.",
+            "prompt": "첨부한 심사 양식은 그대로 두고 값 칸만 채워서 새 .hwpx 파일로 줘. 원본은 건드리지 마."
           },
           {
-            "label": "제출본과 대응표를 함께 낸다",
-            "text": "추적을 모두 수락한 사본과 지적사항-수정내용 대응표를 한 번에 만듭니다.",
-            "prompt": "모든 변경을 수락한 깨끗한 사본을 만들고, 지적사항과 수정 내용을 표로 정리해 줘."
+            "label": "새 문서와 복구까지",
+            "text": "머리글·쪽번호가 들어간 계획서를 조립하고, 한컴에서 안 열리는 파일은 복구 사본으로 살립니다.",
+            "prompt": "머리글과 쪽번호가 들어간 사업계획서를 새로 만들어 줘. 그리고 열리지 않는 이 hwpx는 복구 사본을 만들어 줘."
           }
         ],
-        "note": "GitHub: https://github.com/anthropics/skills · Apache 2.0 · docx 스킬은 표·각주·머리글이 있는 서식 문서와 .dotx 템플릿도 다룹니다."
+        "note": "GitHub: https://github.com/airmang/hwpx-plugins · Apache 2.0 · 결과는 늘 새 .hwpx 파일이고 원본은 그대로 둡니다(.hwp로 내려면 한/글에서 한 번 저장). MCP 서버를 쓰려면 uv가 필요합니다."
       },
       {
-        "id": "skill-docx",
+        "id": "skill-hwpx",
         "series": "1일 1스킬",
         "ep": "SKILL",
         "date": "2026-11-22",
         "tags": [
-          "문서작업",
-          "Word"
+          "문서자동화",
+          "한글"
         ],
-        "title": "docx — '어디를 고쳤나'를 파일 안에 남기는 스킬",
-        "summary": "anthropics/skills(Apache 2.0)의 docx 스킬은 워드 파일을 XML 묶음으로 다룹니다. 추적 변경·검토 메모·수락본 추출에 더해 표·각주·머리글이 있는 서식 문서와 .dotx 템플릿 작성까지 한 흐름으로 안내합니다.",
+        "title": "hwpx-plugin — 한글 문서를 순수 파이썬으로 읽고 채우는 스킬",
+        "summary": "python-hwpx 프로젝트가 직접 관리하는 first-party HWPX 에이전트 스킬입니다(Apache 2.0). .hwpx는 물론 .hwp 5.0까지 열어 본문·표 안 문단·각주를 뽑고, 서식 보존 form-fit으로 값 칸만 채우며, 머리글·쪽번호 문서 조립과 손상 파일 복구까지 안내합니다.",
         "steps": [
           {
             "label": "플러그인으로 설치한다",
-            "text": "문서 스킬 묶음(document-skills)에 docx·pdf·pptx·xlsx가 함께 들어 있습니다.",
-            "prompt": "/plugin marketplace add anthropics/skills\n/plugin install document-skills@anthropic-agent-skills"
+            "text": "Claude Code와 Codex가 같은 마켓을 씁니다. 지금 공개 판은 hwpx-plugin 8.0.0(2026-11-21 발행)입니다.",
+            "prompt": "claude plugin marketplace add airmang/hwpx-plugins\nclaude plugin install hwpx-plugin@hwpx"
           },
           {
-            "label": "받은 문서는 풀어서 고친다",
-            "text": "docx-js는 새 문서만 만들 수 있어, 기존 문서는 압축을 풀어 word/document.xml을 고친 뒤 다시 묶습니다. 조각난 run은 merge_runs.py로 먼저 합칩니다.",
-            "prompt": "이 docx의 압축을 풀고 merge_runs.py로 조각난 run을 합친 다음, 4장 표의 수치를 고쳐 다시 묶어 줘. validate.py로 검사도 해 줘."
+            "label": "기존 문서는 보존 저장으로 고친다",
+            "text": "원본을 덮어쓰지 않고 새 파일로 냅니다. 표의 값 칸이 누름틀이면 그 누름틀을 채웁니다.",
+            "prompt": "이 hwpx 표에서 값 칸만 채우고 나머지 서식은 그대로 둬. 원본은 남기고 새 파일로 저장해 줘."
           },
           {
-            "label": "추적과 메모를 검증한다",
-            "text": "redline으로 고칠 때는 validate.py --author로 추적되지 않은 변경이 없는지 확인하고, accept_changes.py로 제출본을 만듭니다.",
-            "prompt": "이 수정본에서 추적되지 않은 변경이 있는지 --author로 검사하고, 모든 변경을 수락한 제출본과 메모만 남긴 검토본을 각각 만들어 줘."
+            "label": "검증하고 미리보기로 확인한다",
+            "text": "패키지·스키마·텍스트 검증을 거치고 미리보기 HTML(render_preview)로 눈으로 확인합니다.",
+            "prompt": "결과 파일의 패키지·스키마 검증을 돌리고, 미리보기 HTML로 표와 여백이 깨지지 않았는지 확인해 줘."
           }
         ],
-        "note": "GitHub: https://github.com/anthropics/skills · Apache 2.0 · pandoc·LibreOffice(soffice)·pdftoppm이 함께 필요합니다. 심의·평가서 서식, 논문 수정 대응, 출판 교정에 그대로 씁니다."
+        "note": "GitHub: https://github.com/airmang/hwpx-plugins · Apache 2.0 · .hwp는 읽고 고칠 수 있지만 결과는 늘 .hwpx입니다. 설치·갱신 뒤 새 세션이 필요하고 MCP 서버는 uv를 씁니다."
       },
       {
         "id": "ep10",
