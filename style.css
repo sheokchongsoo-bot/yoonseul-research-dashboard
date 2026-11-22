@@ -312,6 +312,7 @@ ul { list-style: none; }
 
 .card {
   display: flex; flex-direction: column;
+  min-width: 0;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -429,6 +430,7 @@ ul { list-style: none; }
 .feat {
   position: relative;
   display: flex; flex-direction: column;
+  min-width: 0;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -829,7 +831,8 @@ ul { list-style: none; }
 
   .hero { gap: 30px; }
   .lead { font-size: 18.5px; }
-  .hero__meta { font-size: 15.5px; }
+  .hero__meta { font-size: 15.5px; row-gap: 6px; }
+  .hero__meta .sep { display: none; }
 
   .stats { grid-template-columns: 1fr 1fr; }
   .stat { padding: 18px 17px 16px; }
