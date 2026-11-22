@@ -849,7 +849,7 @@ ul { list-style: none; }
   .prompt code { font-size: 13px; }
 
   .fields td:first-child, .fields td:nth-child(2) { white-space: normal; }
-  .fields td:nth-child(2) { font-size: 12px; overflow-wrap: anywhere; }
+  .fields td:nth-child(2) { font-size: 12px; }
 
   .footer__inner { flex-direction: column; gap: 14px; }
 }
