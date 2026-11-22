@@ -856,9 +856,9 @@ ul { list-style: none; }
   .toollist li { grid-template-columns: 1fr; }
   .toollist .kind { padding-top: 0; }
 
-  .prompt { padding: 14px 74px 14px 16px; }
+  .prompt { padding: 14px 16px; }
   .prompt code { font-size: 15.5px; }
-  .prompt .copy { padding: 5px 9px; font-size: 14px; }
+  .prompt .copy { position: static; margin: 10px 0 0 auto; padding: 6px 12px; font-size: 14.5px; }
 
   .fields { font-size: 16.5px; }
   .fields td:first-child, .fields td:nth-child(2) { white-space: normal; }
